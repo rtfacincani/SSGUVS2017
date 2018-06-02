@@ -1,0 +1,59 @@
+﻿@model SSGU.Models.DBAD
+
+@{
+    Layout = null; <!-- "~/Views/Shared/_Layout.cshtml"; -->
+    ViewBag.Title = "Sistema SeconSystem";
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Fechar</span></button>
+            <h4 class="modal-title">Detalhes da conta a incluir no grupo SeconSystem</h4>
+        </div>
+        <div class="modal-body">
+            <b><p>@Html.DisplayNameFor(model => model.Nome) :</b> @Html.DisplayFor(model => model.Nome)</p>
+            <b><p>@Html.DisplayNameFor(model => model.Usuario) :</b> @Html.DisplayFor(model => model.Usuario)</p>
+            <b><p>@Html.DisplayNameFor(model => model.Ativo) :</b> @Html.DisplayFor(model => model.Ativo)</p>
+            <b><p>@Html.DisplayNameFor(model => model.Departamento) :</b> @Html.DisplayFor(model => model.Departamento)</p>
+            <b><p>@Html.DisplayNameFor(model => model.Gerente) :</b> @Html.DisplayFor(model => model.Gerente)</p>
+            <b><p>@Html.DisplayNameFor(model => model.Funcao) :</b> @Html.DisplayFor(model => model.Funcao)</p>
+            <P></P>
+            <center><b>****** Contato com o usuário ******</b></center>
+            <p></p>
+            <b><p>@Html.DisplayNameFor(model => model.Email) :</b> @Html.DisplayFor(model => model.Email)</p>
+            <b><p>@Html.DisplayNameFor(model => model.Ramal) :</b> @Html.DisplayFor(model => model.Ramal)</p>
+            <p></p>
+            <p></p>
+            @{
+                switch (ViewBag.Resp)
+                {
+                    case "E":
+                            <div class="alert alert-danger" role="alert">
+                                <center><b><h4>@ViewBag.Mensagem</h4></b></center>
+                            </div>
+                            break;
+                        case "S":
+                        <div class="alert alert-success" role="alert">
+                            <center><b><h4>@ViewBag.Mensagem</h4></b></center>
+                        </div>
+                            break;
+                        case "N":
+                            <div class="alert alert-info" role="alert">
+                                <center><b><h4>@ViewBag.Mensagem</h4></b></center>
+                            </div>
+                            break;
+                        default:
+                            <div class="alert alert-danger" role="alert">
+                                <center><b><h4>@ViewBag.Mensagem</h4></b></center>
+                            </div>
+                        break;
+                }
+            }
+           
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

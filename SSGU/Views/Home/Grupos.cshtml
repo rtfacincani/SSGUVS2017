@@ -1,0 +1,84 @@
+﻿@model SSGU.Models.DBAD
+
+@{
+    Layout = null; <!-- "~/Views/Shared/_Layout.cshtml"; -->
+    ViewBag.Title = "Gerenciamento de Grupos";
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Fechar</span></button>
+                    <li class="breadcrumb-item active modal-title" aria-current="page"><h4>Detalhes da conta a ser gerenciada - Grupos de Acesso</h4></li>
+                </ol>
+            </nav>
+        </div>
+        <div class="modal-body pre-scrollable">
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Nome) :</b> @Html.DisplayFor(model => model.Nome)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Usuario) :</b> @Html.DisplayFor(model => model.Usuario)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Departamento) :</b> @Html.DisplayFor(model => model.Departamento)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Gerente) :</b> @Html.DisplayFor(model => model.Gerente)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Funcao) :</b> @Html.DisplayFor(model => model.Funcao)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Ativo) :</b> @Html.DisplayFor(model => model.Ativo)</p>
+                </div>
+            </div>
+            <P></P>
+            <center><b>****** Contato com o usuário ******</b></center>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Email) :</b> @Html.DisplayFor(model => model.Email)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Ramal) :</b> @Html.DisplayFor(model => model.Ramal)</p>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>Lista de Grupos Ativos</b></p>
+                    <ul class="list-group">
+                        @foreach (var str in ViewBag.Grupos)
+                        {
+                            <li class="list-group-item">
+                                @Html.Raw(str)
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>Lista de Grupos Disponíveis para incluir</b></p>
+                    <ul class="list-group">
+                        @foreach (var str2 in ViewBag.TGrupos)
+                        {
+                            <li class="list-group-item">
+                                @Html.Raw(str2)
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

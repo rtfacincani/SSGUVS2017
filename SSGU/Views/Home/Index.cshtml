@@ -1,0 +1,252 @@
+﻿@using X.PagedList.Mvc;
+@model X.PagedList.PagedList<SSGU.Models.DBAD>
+
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <!-- <div class="jumbotron"> -->
+    <!--   <img src="~/Imagens/seconci-rio.jpg" height="97" width="298" align="left" /> -->
+    <h3 align="center">Listagem dos usuários do Domínio FACINCANI</h3>
+
+    <!--</div> -->
+</div>
+
+<p></p>
+@using (Html.BeginForm(null,null, FormMethod.Post, new { name = "form", id = "form" }))
+{
+<div class="form-group row">
+    <div class="col-md-8">
+            Pesquise: @Html.TextBox("PesquisarString", null, new { @placeholder = "Nome, Usuário ou E-mail", @class = "form-control-plaintext ", @onfocus = "this.value='';" })
+                <button type="submit" class="btn btn-primary btn-sm role='button'aria-pressed='true'" value="Pesquisar">
+                    <span class="glyphicon glyphicon-search input-group-text"></span>
+                </button>
+    </div>
+    <div class="col-md-4">
+        @{ 
+            List<SelectListItem> Itens = new List<SelectListItem>();
+            Itens.Add(new SelectListItem
+            {
+                Text = "Sim",
+                Value = "Sim",
+                Selected = true
+            });
+            Itens.Add(new SelectListItem
+            {
+                Text = "Não",
+                Value = "Não"
+            });
+        }
+        Mostrar apenas contas ativas ?
+        @Html.DropDownList("filtroAtivados", Itens, new { @class = "btn btn-primary btn-sm dropdown-toggle", onchange = "this.form.submit();" })
+    </div>
+</div>
+}
+<p></p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Nome Completo", "Index", new { sortOrder = ViewBag.NameSortParm })
+
+        </th>
+        <th>
+            @Html.ActionLink("Logon", "Index", new { sortOrder = ViewBag.UsuarioSortParm })
+        </th>
+        <th>
+            @Html.ActionLink("E-mail", "Index", new { sortOrder = ViewBag.EmailSortParm })
+        </th>
+        <th>
+            Ramal
+        </th>
+        <th>
+            Conta Ativa?
+        </th>
+        <th align="center">Ações Disponíveis</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Usuario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Ramal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ativo)
+            </td>
+            <td align="center">
+                <button class="btn btn-basic btn-sm role='button'aria-pressed='true' details" data-id="@item.Id" data-toggle="tooltip" title="Inf. do Usuário"><i class="fa fa-user"></i></button>
+                <button class="btn btn-primary btn-sm role='button'aria-pressed='true' desbloquearconta" data-id="@item.Id" data-toggle="tooltip" title="Desbloquear conta"><i class="fa fa-unlock"></i></button>
+                <button class="btn btn-default btn-sm role='button'aria-pressed='true' resetarsenha" data-id="@item.Id" data-toggle="tooltip" title="Reinicializar a senha"><i class="fa fa-user-secret"></i></button>
+                <button class="btn btn-success btn-sm role='button'aria-pressed='true' edit" data-id="@item.Id"><i class="fa fa-laptop" data-toggle="tooltip" title="Desbloquear Logon Único"></i></button>
+                <button class="btn btn-info btn-sm role='button'aria-pressed='true' grupos" data-id="@item.Id" data-toggle="tooltip" title="Gerenciar Grupos"><i class="fa fa-users"></i></button>
+                <button class="btn btn-warning btn-sm role='button'aria-pressed='true' edit" data-id="@item.Id" data-toggle="tooltip" title="Habilitar Acesso Internet"><i class="fa fa-chrome"></i></button>
+                <button class="btn btn-danger btn-sm role='button'aria-pressed='true' seconsystem" data-id="@item.Id" data-toggle="tooltip" title="Habilitar Sistema SeconSystem"><i class="fa fa-toggle-on"></i></button>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div id="modals"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+</div>
+<p></p>
+<P align="right"><b>Listando registros de @Model.FirstItemOnPage a @Model.LastItemOnPage de um total de @Model.TotalItemCount</b></P>
+<p></p>
+@Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter,currentAtivados = ViewBag.CurrentAtivados }))
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(".btnDetails").click(function () {
+
+                var id = $(this).data("value");
+
+                $("#conteudoModal").load("/Home/Detalhes?id=" + id,
+                    function () {
+                        $("#myModal").modal("show");
+                    }
+                );
+
+            });
+
+        });
+
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        $(function () {
+
+            $('.details').on('click', function () {
+                var id = $(this).attr("data-id");
+
+                $('#modal').load("/Home/Detalhes?id=" + id,
+                    function () {
+                        $('#modal').modal("show");
+                    }
+                )
+            });
+        })
+
+        $(function () {
+
+            $('.desbloquearconta').on('click', function () {
+                var id = $(this).attr("data-id");
+
+                $('#modal').load("/Home/Unlock?id=" + id,
+                    function () {
+                        $('#modal').modal("show");
+                    }
+                )
+            });
+        })
+
+        $(function () {
+
+            $('.resetarsenha').on('click', function () {
+                var id = $(this).attr("data-id");
+
+                $('#modal').load("/Home/RSenha?id=" + id,
+                    function () {
+                        $('#modal').modal("show");
+                    }
+                )
+            });
+        })
+
+        $(function () {
+
+            $('.seconsystem').on('click', function () {
+                var id = $(this).attr("data-id");
+
+                $('#modal').load("/Home/SeconSystem?id=" + id,
+                    function () {
+                        $('#modal').modal("show");
+                    }
+                )
+            });
+        })
+
+        $(function () {
+
+            $('.grupos').on('click', function () {
+                var id = $(this).attr("data-id");
+
+                $('#modal').load("/Home/Grupos?id=" + id,
+                    function () {
+                        $('#modal').modal("show");
+                    }
+                )
+            });
+        })
+
+        $(window).unload(function () {
+            parent.Fechar();
+        });
+
+        function Fechar() {
+            $.ajax({
+                type: 'POST',
+                url: '/Home/Index',
+                data: {
+
+                },
+                success: function (Html) {
+                    $("#modal").html(Html);
+                }
+            });
+        }
+
+        function myFunction() {
+            var checkBox = document.getElementById("myCheck");
+            if (checkBox.checked == true) {
+                var frm = $("#form").addHidden('filtroAtivados', "F").addHidden('currentAtivados', null)
+                    .submit();
+            } else {
+                var frm = $("#form").addHidden('filtroAtivados', null).addHidden('currentAtivados', "F")
+                    .submit();
+            }
+        }
+
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+
+    </script>
+}
