@@ -173,7 +173,7 @@ namespace SSGU.Controllers
 
         public ArrayList CarregaGrupos()
         {
-            string LDAP = "LDAP://DC=facincani,DC=local";
+            string LDAP = System.Configuration.ConfigurationManager.AppSettings["LDAPconf"].ToString(); //"LDAP://DC=facincani,DC=local";
             DirectoryEntry deRoot = new DirectoryEntry(LDAP);
             DirectorySearcher deSrch = new DirectorySearcher(deRoot, "(&(objectClass=user)(objectCategory=person))");
             ArrayList memberof = new ArrayList();
@@ -191,7 +191,7 @@ namespace SSGU.Controllers
         {
             var lista = new List<DBAD>();
             // string LDAP = "LDAP://CN=Domain-DNS,CN=Schema,CN=Configuration,DC=facincani,DC=local";
-            string LDAP = "LDAP://DC=facincani,DC=local";
+            string LDAP = System.Configuration.ConfigurationManager.AppSettings["LDAPconf"].ToString();//"LDAP://DC=facincani,DC=local";
             DirectoryEntry deRoot = new DirectoryEntry(LDAP);
             DirectorySearcher deSrch = new DirectorySearcher(deRoot, "(&(objectClass=user)(objectCategory=person))");
             /*deSrch.PropertiesToLoad.Add("cn");

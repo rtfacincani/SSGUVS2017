@@ -28,13 +28,13 @@ namespace SSGU.Util
             myUser.Save(); 
        */ 
 
-        private string sDomain = "facincani";
+        private string sDomain = ConfigurationManager.AppSettings["Dominio"].ToString(); //"facincani";
         //private string sDefaultOU = "OU=Test Users,OU=Test,DC=Facincani,DC=local";
         //private string sDefaultOU = "CN=Serviço Configuração,CN=Users,DC=facincani,DC=local";
-        private string sDefaultOU = "DC=facincani,DC=local";
-        private string sDefaultRootOU = "DC=facincani,DC=local";
-        private string sServiceUser = @"svccfg";
-        private string sServicePassword = "s#c@2018";
+        private string sDefaultOU = ConfigurationManager.AppSettings["DefaultOU"].ToString();//"DC=facincani,DC=local";
+        private string sDefaultRootOU = ConfigurationManager.AppSettings["Dominio"].ToString();//"DC=facincani,DC=local";
+        private string sServiceUser = @ConfigurationManager.AppSettings["UsuarioServico"].ToString();//"svccfg";
+        private string sServicePassword = ConfigurationManager.AppSettings["SenhaServico"].ToString();//"s#c@2018";
 
 
         /// <summary>
