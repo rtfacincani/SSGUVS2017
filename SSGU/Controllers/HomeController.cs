@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using SSGU.Models;
 using X.PagedList;
 using System.Collections;
+using System.Configuration;
 
 namespace SSGU.Controllers
 {
@@ -108,6 +109,7 @@ namespace SSGU.Controllers
             // objeto root = PeguoNoRaiz();
             string RootNode = de.Name.Substring(3);
             ViewBag.NomeUsuario = dx.Properties["fullname"].Value.ToString();
+            ViewBag.Apresentacao = ConfigurationManager.AppSettings["NomeExibicao"].ToString();
             if (tabela.Count != 0)
             {
                 //int pageSize = 5;
@@ -173,7 +175,7 @@ namespace SSGU.Controllers
 
         public ArrayList CarregaGrupos()
         {
-            string LDAP = System.Configuration.ConfigurationManager.AppSettings["LDAPconf"].ToString(); //"LDAP://DC=facincani,DC=local";
+            string LDAP = ConfigurationManager.AppSettings["LDAPconf"].ToString(); //"LDAP://DC=facincani,DC=local";
             DirectoryEntry deRoot = new DirectoryEntry(LDAP);
             DirectorySearcher deSrch = new DirectorySearcher(deRoot, "(&(objectClass=user)(objectCategory=person))");
             ArrayList memberof = new ArrayList();
@@ -191,7 +193,7 @@ namespace SSGU.Controllers
         {
             var lista = new List<DBAD>();
             // string LDAP = "LDAP://CN=Domain-DNS,CN=Schema,CN=Configuration,DC=facincani,DC=local";
-            string LDAP = System.Configuration.ConfigurationManager.AppSettings["LDAPconf"].ToString();//"LDAP://DC=facincani,DC=local";
+            string LDAP = ConfigurationManager.AppSettings["LDAPconf"].ToString();//"LDAP://DC=facincani,DC=local";
             DirectoryEntry deRoot = new DirectoryEntry(LDAP);
             DirectorySearcher deSrch = new DirectorySearcher(deRoot, "(&(objectClass=user)(objectCategory=person))");
             /*deSrch.PropertiesToLoad.Add("cn");
