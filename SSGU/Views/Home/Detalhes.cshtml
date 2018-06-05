@@ -25,6 +25,23 @@
             <b><p>@Html.DisplayNameFor(model => model.Ramal) :</b> @Html.DisplayFor(model => model.Ramal)</p>
         </div>
         <div class="modal-footer">
+            @if (ViewBag.StatusAtivo)
+            {
+                var user = ViewBag.User;
+                <a href="@Url.Action("EDConta", "Home",new { usuario = user, desativa = true } )" class="btn btn-danger">
+                    Desativar Conta
+                    <span class="glyphicon glyphicon-remove-sign aria-hidden="true"></span>
+                </a>
+
+            }
+            else
+            {
+                var user = ViewBag.User;
+                <a href="@Url.Action("EDConta", "Home",new { usuario = user, desativa = false } )" class="btn btn-success">
+                    Ativar Conta
+                    <span class="glyphicon glyphicon-ok-sign aria-hidden="true"></span>
+                </a>
+            }
             <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
         </div>
     </div><!-- /.modal-content -->

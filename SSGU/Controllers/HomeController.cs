@@ -132,6 +132,16 @@ namespace SSGU.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (resultado.Ativo)
+            {
+                ViewBag.StatusAtivo = true;
+                ViewBag.User = resultado.Usuario;
+            }
+            else {
+                ViewBag.User = resultado.Usuario;
+                ViewBag.StatusAtivo = false;
+            }
             return PartialView(resultado);
         }
 
@@ -451,6 +461,24 @@ namespace SSGU.Controllers
                 else { return 0; }
             }
             return 2;
+        }
+
+        public ActionResult EDConta(string usuario,bool desativa)
+        {
+            if (desativa)
+            {
+                ADMethods.DisableUserAccount(usuario);
+                TempData["MsgIndex"] = "A conta de " + usuario + " foi Desabilitada!";
+                TempData["MsgIndexStatus"] = "success";
+            }
+            else
+            {
+                ADMethods.EnableUserAccount(usuario);
+                TempData["MsgIndex"] = "A conta de " + usuario + " foi Habilitada!";
+                TempData["MsgIndexStatus"] = "success";
+            }
+
+            return RedirectToAction("Index");
         }
 
 

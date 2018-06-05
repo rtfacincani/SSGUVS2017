@@ -15,36 +15,56 @@
 
     <!--</div> -->
 </div>
+@if (@TempData["MsgIndex"] != null)
+{
+    if (@TempData["MsgIndexStatus"] == "success")
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Sucesso!</strong> @TempData["MsgIndex"]
+        </div>
+       
+    }
+    else
+    {
+        <div class="alert alert-sucess alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Atenção! </strong>@TempData["MsgIndex"]
+        </div>
+    }
+}
 
 <p></p>
-@using (Html.BeginForm(null,null, FormMethod.Post, new { name = "form", id = "form" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { name = "form", id = "form" }))
 {
-<div class="form-group row">
-    <div class="col-md-8">
+    <div class="form-group row">
+        <div class="col-md-8">
             Pesquise: @Html.TextBox("PesquisarString", null, new { @placeholder = "Nome, Usuário ou E-mail", @class = "form-control-plaintext ", @onfocus = "this.value='';" })
-                <button type="submit" class="btn btn-primary btn-sm role='button'aria-pressed='true'" value="Pesquisar">
-                    <span class="glyphicon glyphicon-search input-group-text"></span>
-                </button>
+            <button type="submit" class="btn btn-primary btn-sm role='button'aria-pressed='true'" value="Pesquisar">
+                <span class="glyphicon glyphicon-search input-group-text"></span>
+            </button>
+        </div>
+        <div class="col-md-4">
+            @{
+                List<SelectListItem> Itens = new List<SelectListItem>();
+                Itens.Add(new SelectListItem
+                {
+                    Text = "Sim",
+                    Value = "Sim",
+                    Selected = true
+                });
+                Itens.Add(new SelectListItem
+                {
+                    Text = "Não",
+                    Value = "Não"
+                });
+            }
+            Mostrar apenas contas ativas ?
+            @Html.DropDownList("filtroAtivados", Itens, new { @class = "btn btn-primary btn-sm dropdown-toggle", onchange = "this.form.submit();" })
+        </div>
     </div>
-    <div class="col-md-4">
-        @{ 
-            List<SelectListItem> Itens = new List<SelectListItem>();
-            Itens.Add(new SelectListItem
-            {
-                Text = "Sim",
-                Value = "Sim",
-                Selected = true
-            });
-            Itens.Add(new SelectListItem
-            {
-                Text = "Não",
-                Value = "Não"
-            });
-        }
-        Mostrar apenas contas ativas ?
-        @Html.DropDownList("filtroAtivados", Itens, new { @class = "btn btn-primary btn-sm dropdown-toggle", onchange = "this.form.submit();" })
-    </div>
-</div>
 }
 <p></p>
 <table class="table">
@@ -121,7 +141,7 @@
 <p></p>
 <P align="right"><b>Listando registros de @Model.FirstItemOnPage a @Model.LastItemOnPage de um total de @Model.TotalItemCount</b></P>
 <p></p>
-@Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter,currentAtivados = ViewBag.CurrentAtivados }))
+@Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, currentAtivados = ViewBag.CurrentAtivados }))
 
 
 @section scripts{
