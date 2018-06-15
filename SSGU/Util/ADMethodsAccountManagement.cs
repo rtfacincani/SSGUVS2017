@@ -339,12 +339,20 @@ namespace SSGU.Util
         /// <returns>Returns true if user is a group member</returns>
         public bool IsUserGroupMember(string sUserName, string sGroupName)
         {
+            string resposta;
             UserPrincipal oUserPrincipal = GetUser(sUserName);
             GroupPrincipal oGroupPrincipal = GetGroup(sGroupName);
 
-            if (oUserPrincipal == null || oGroupPrincipal == null)
+            if (oUserPrincipal != null && oGroupPrincipal != null)
             {
-                return oGroupPrincipal.Members.Contains(oUserPrincipal);
+                if (oGroupPrincipal.Members.Contains(oUserPrincipal))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {

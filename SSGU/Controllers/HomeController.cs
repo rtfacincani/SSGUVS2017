@@ -114,7 +114,7 @@ namespace SSGU.Controllers
             {
                 //int pageSize = 5;
                 //int pageNumber = (page ?? 1);
-                return View(pesquisa.ToPagedList(pagina, 5)); //ToPagedList(pageNumber,pageSize));
+                return View(pesquisa.ToPagedList(pagina, 08)); //ToPagedList(pageNumber,pageSize));
             }
             return View(pesquisa);
         }
@@ -142,6 +142,29 @@ namespace SSGU.Controllers
                 ViewBag.User = resultado.Usuario;
                 ViewBag.StatusAtivo = false;
             }
+
+            if (ADMethods.IsAccountLocked(resultado.Usuario))
+            {
+                ViewBag.Bloqueado = true;
+            }
+            else
+            {
+                ViewBag.Bloqueado = false;
+            }
+
+            if (ADMethods.IsUserGroupMember(resultado.Usuario,"SeconSystem"))
+            {
+                ViewBag.Sistema = true;
+            }
+            else
+            {
+                ViewBag.Sistema = false;
+            }
+
+            ViewBag.EstacaoBloqueada = true;
+            ViewBag.AcessoInternet = "Não";
+            ViewBag.PerfilInternet = "";
+
             return PartialView(resultado);
         }
 
@@ -282,7 +305,7 @@ namespace SSGU.Controllers
                 return HttpNotFound();
             }
 
-            int retorno = DesbloquearConta(resultado.Usuario);
+            int retorno = 0; //DesbloquearConta(resultado.Usuario);
 
             switch (retorno)
             {
@@ -318,7 +341,7 @@ namespace SSGU.Controllers
             {
                 return HttpNotFound();
             }
-            int retorno = ResetarConta(resultado.Usuario);
+            int retorno = 0; //ResetarConta(resultado.Usuario);
             switch (retorno)
             {
                 case 0:
@@ -352,7 +375,7 @@ namespace SSGU.Controllers
             {
                 return HttpNotFound();
             }
-            int retorno = SetarSeconsystem(resultado.Usuario);
+            int retorno = 0; // SetarSeconsystem(resultado.Usuario);
             switch (retorno)
             {
                 case 0:
@@ -393,7 +416,7 @@ namespace SSGU.Controllers
             return PartialView(resultado);
         }
 
-        public int ResetarConta(string usuario)
+        public ActionResult ResetarConta(string usuario)
         {
             PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
             // find a user
@@ -405,62 +428,63 @@ namespace SSGU.Controllers
                     user.SetPassword("Seconci@1234");
                     user.ExpirePasswordNow();
                     user.Save();
-                    return 1;
+                    TempData["MsgIndex"] = "A senha de " + usuario + " foi trocada para Seconci@1234";
+                    TempData["MsgIndexStatus"] = "success";
                 }
                 catch (Exception e)
                 {
-                    return 2;
+                    TempData["MsgIndex"] = "A senha de " + usuario + " não foi trocada. Erro " + e;
+                    TempData["MsgIndexStatus"] = "danger";
                 }
             }
-            else { return 0; }
+
+            return RedirectToAction("Index");
         }
 
-        public int SetarSeconsystem(string usuario)
+        public ActionResult SetarSeconsystem(string usuario, bool desativa)
         {
-            PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
-            // find a user
-            UserPrincipal user = UserPrincipal.FindByIdentity(ctx, usuario);
-            if (user != null)
+            if (desativa)
             {
-                try
-                {
-                    if (ADMethods.AddUserToGroup(usuario,"SeconSystem"))
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
-                catch (Exception e)
-                {
-                    return 2;
-                }
+                ADMethods.RemoveUserFromGroup(usuario, "SeconSystem");
+                TempData["MsgIndex"] = "O " + usuario + " foi removido do grupo SeconSystem";
+                TempData["MsgIndexStatus"] = "success";
             }
-            else { return 0; }
+            else
+            {
+                ADMethods.AddUserToGroup(usuario, "SeconSystem");
+                TempData["MsgIndex"] = "O " + usuario + " foi incluído no grupo SeconSystem";
+                TempData["MsgIndexStatus"] = "success";
+            }
+
+            return RedirectToAction("Index");
+
         }
 
-        public int DesbloquearConta(string usuario)
+        public ActionResult DesbloquearConta(string usuario)
         {
             PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
             // Localizar o usuário
             UserPrincipal user = UserPrincipal.FindByIdentity(ctx, usuario);
             if (user != null)
             {
-                if (user.IsAccountLockedOut() || user.Enabled == false)
+                if (user.IsAccountLockedOut())
                 {
                     // unlock user
                     user.UnlockAccount();
-                    user.Enabled = true;
                     user.Save();
-                    //user.Properties["description"].Value = "New description for user";
-                    //user.CommitChanges();
-                    return 1;
+                    TempData["MsgIndex"] = "A conta de " + usuario + " foi Desbloqueada!";
+                    TempData["MsgIndexStatus"] = "success";
                 }
-                else { return 0; }
+                else
+                {
+                    TempData["MsgIndex"] = "Não foi possível Desbloquear a conta de " + usuario + " Verificar diretamento no AD!";
+                    TempData["MsgIndexStatus"] = "danger";
+                }
+
             }
-            return 2;
+
+            return RedirectToAction("Index");
+
         }
 
         public ActionResult EDConta(string usuario,bool desativa)

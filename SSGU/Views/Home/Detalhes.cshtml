@@ -5,24 +5,77 @@
     ViewBag.Title = "Detalhes";
 }
 
-<div class="modal-dialog">
+<style>
+    .modal-dialog {
+        width: 1200px;
+        height: 900px !important;
+    }
+
+    .modal-content {
+        /* 80% of window height */
+        height: 50%;
+        /* background-color: #BBD6EC; */
+    }
+
+    .modal-header {
+        background-color: #ff9933;
+        padding: 16px 16px;
+        color: #FFF;
+        border-bottom: 2px dashed #ff9933;
+    }
+</style>
+
+<div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Fechar</span></button>
-            <h4 class="modal-title">Detalhes da conta do usuário</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Fechar</span></button>
+                    <h4>Detalhes da conta a ser gerenciada - Informações da Conta</h4>
         </div>
-        <div class="modal-body">
-            <b><p>@Html.DisplayNameFor(model => model.Nome) :</b> @Html.DisplayFor(model => model.Nome)</p>
-            <b><p>@Html.DisplayNameFor(model => model.Usuario) :</b> @Html.DisplayFor(model => model.Usuario)</p>
-            <b><p>@Html.DisplayNameFor(model => model.Ativo) :</b> @Html.DisplayFor(model => model.Ativo)</p>
-            <b><p>@Html.DisplayNameFor(model => model.Departamento) :</b> @Html.DisplayFor(model => model.Departamento)</p>
-            <b><p>@Html.DisplayNameFor(model => model.Gerente) :</b> @Html.DisplayFor(model => model.Gerente)</p>
-            <b><p>@Html.DisplayNameFor(model => model.Funcao) :</b> @Html.DisplayFor(model => model.Funcao)</p>
+        <div class="modal-body pre-scrollable">
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Nome) :</b> @Html.DisplayFor(model => model.Nome)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Usuario) :</b> @Html.DisplayFor(model => model.Usuario)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Departamento) :</b> @Html.DisplayFor(model => model.Departamento)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Gerente) :</b> @Html.DisplayFor(model => model.Gerente)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Funcao) :</b> @Html.DisplayFor(model => model.Funcao)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Ativo) :</b> @Html.DisplayFor(model => model.Ativo)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>Possui Acesso Internet :</b> @ViewBag.AcessoInternet</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>Nível de Acesso :</b> @ViewBag.PerfilInternet</p>
+                </div>
+            </div>
             <P></P>
             <center><b>****** Contato com o usuário ******</b></center>
             <p></p>
-            <b><p>@Html.DisplayNameFor(model => model.Email) :</b> @Html.DisplayFor(model => model.Email)</p>
-            <b><p>@Html.DisplayNameFor(model => model.Ramal) :</b> @Html.DisplayFor(model => model.Ramal)</p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Email) :</b> @Html.DisplayFor(model => model.Email)</p>
+                </div>
+                <div class="col-sm-6">
+                    <b><p>@Html.DisplayNameFor(model => model.Ramal) :</b> @Html.DisplayFor(model => model.Ramal)</p>
+                </div>
+            </div>
+            <p></p>
         </div>
         <div class="modal-footer">
             @if (ViewBag.StatusAtivo)
@@ -32,7 +85,6 @@
                     Desativar Conta
                     <span class="glyphicon glyphicon-remove-sign aria-hidden="true"></span>
                 </a>
-
             }
             else
             {
@@ -42,7 +94,80 @@
                     <span class="glyphicon glyphicon-ok-sign aria-hidden="true"></span>
                 </a>
             }
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+            <a href="@Url.Action("ResetarConta", "Home",new { usuario = ViewBag.User } )" class="btn btn-info">
+                    Reinicializar Senha
+                    <span class="fa fa-user-secret aria-hidden="true"></span>
+            </a>
+
+            @if (ViewBag.EstacaoBloqueada)
+            {
+                var user = ViewBag.User;
+                <a href="@Url.Action("DesbloquearEstacao", "Home",new { usuario = user } )" class="btn btn-success">
+                    Desbloquear Estação
+                    <span class="fa fa-laptop aria-hidden="true"></span>
+                </a>
+            }
+
+            @if (ViewBag.AcessoInternet == "Não")
+            {
+                var user = ViewBag.User;
+                <div class="btn-group">
+                  <button type="button" class="btn btn-primary">Habilitar Internet</button>
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="fa fa-chrome aria-hidden="true"></span>
+                      <span class="caret"></span>
+                      <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                      <li><a href="@Url.Action("HabilitaInternet", "Home",new { usuario = user,desabilita = false,acesso = 1 } )">Limitado</a></li>
+                      <li><a href="@Url.Action("HabilitaInternet", "Home",new { usuario = user,desabilita = false,acesso = 2 } )">Normal</a></li>
+                      <li><a href="@Url.Action("HabilitaInternet", "Home",new { usuario = user,desabilita = false,acesso = 3 } )">Intermediário</a></li>
+                      <li role="separator" class="divider"></li>
+                      <li><a href="@Url.Action("HabilitaInternet", "Home",new { usuario = user,desabilita = false,acesso = 4 } )">Avançado</a></li>
+                      <li><a href="@Url.Action("HabilitaInternet", "Home",new { usuario = user,desabilita = false,acesso = 5 } )">Expert</a></li>
+                  </ul>
+                </div>
+            }
+            else
+            {
+                var user = ViewBag.User;
+                
+                <a href="@Url.Action("HabilitaInternet", "Home",new { usuario = user,desabilita = true,acesso = 0 } )" class="btn btn-primary">
+                    Desabilitar Internet
+                    <span class="fa fa-chrome aria-hidden="true"></span>
+                </a>
+            }
+
+            @if (ViewBag.Bloqueado)
+            {
+                var user = ViewBag.User;
+                <a href="@Url.Action("DesbloquearConta", "Home",new { usuario = user } )" class="btn btn-info">
+                    Desbloquear Conta
+                    <span class="fa fa-unlock aria-hidden="true"></span>
+                </a>
+            }
+
+            @if (ViewBag.Sistema)
+            {
+                var user = ViewBag.User;
+                <a href="@Url.Action("SetarSeconsystem", "Home",new { usuario = user, desativa = true } )" class="btn btn-warning">
+                    Remover do SeconSystem
+                    <span class="glyphicon glyphicon-minus aria-hidden="true"></span>
+                </a>
+            }
+            else
+            {
+                var user = ViewBag.User;
+                <a href="@Url.Action("SetarSeconsystem", "Home",new { usuario = user, desativa = false } )" class="btn btn-warning">
+                    Incluir no SeconSystem
+                    <span class="glyphicon glyphicon-plus aria-hidden="true"></span>
+                </a>
+            }
+            
+           
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+
+
